@@ -246,13 +246,17 @@ function addTowerToMap(tower) {
         console.error("Ошибка: Некорректные координаты вышки", tower);
         return;
     }
+    let markerIcon = 'islands#blueTowerIcon'; // Стандартная иконка
+    if (tower.status === 'accident') {
+        markerIcon = 'islands#redIcon'; // Красная иконка для аварийных вышек
+    }
     const marker = new ymaps.Placemark([tower.lat, tower.lng], {
         id: tower.id,
         iconCaption: 'Вышка',
-        balloonContent: tower.notes + (tower.operators ? `<br>Операторы: ${tower.operators}` : '')
+        balloonContent: tower.notes + (tower.operators ? `<br>Операторы: ${tower.operators}` : '') + (tower.status === 'accident' ? '<br><strong style="color:red;">Авария!</strong>' : ''),
     }, {
         draggable: true,
-        preset: 'islands#blueTowerIcon'
+        preset: markerIcon
     });
 
     marker.events.add('dragend', function (e) {
@@ -264,7 +268,7 @@ function addTowerToMap(tower) {
         if (startTowerId === tower.id) {
             // Снимаем выделение с первой вышки
             startTowerId = null;
-            marker.options.set('preset', 'islands#blueTowerIcon');
+            marker.options.set('preset', markerIcon); // Возвращаем обычную иконку
             if (endTowerId !== null) {
                 // Если была выбрана вторая вышка, делаем её первой
                 startTowerId = endTowerId;
@@ -275,7 +279,7 @@ function addTowerToMap(tower) {
         } else if (endTowerId === tower.id) {
             // Снимаем выделение со второй вышки
             endTowerId = null;
-            marker.options.set('preset', 'islands#blueTowerIcon');
+            marker.options.set('preset', markerIcon); // Возвращаем обычную иконку
         } else if (startTowerId === null) {
             // Выбираем первую вышку
             startTowerId = tower.id;
@@ -353,15 +357,33 @@ function updateTowerCoords(marker, coords) {
 function updateTowerList() {
     const towersList = document.getElementById('towers');
     towersList.innerHTML = '';
-    towers.forEach((tower, index) => {
+    towers.slice(0, 5).forEach((tower, index) => {
         const lat = typeof tower.lat === 'number' ? tower.lat.toFixed(5) : 'N/A';
         const lng = typeof tower.lng === 'number' ? tower.lng.toFixed(5) : 'N/A';
         const listItem = document.createElement('li');
-        listItem.innerHTML = `Вышка: id = ${tower.id} - Широта: ${lat}, Долгота: ${lng}
+        listItem.classList.add('list-group-item', 'tower-list-item');
+        listItem.innerHTML = `
+            <h5 class="mb-1">Вышка ID: ${tower.id}</h5>
+            <p class="mb-1">Широта: ${lat}, Долгота: ${lng}</p>
+            <p class="mb-1">Фото: <a href="${tower.photo ? tower.photo : '#'}" target="_blank">${tower.photo || 'Нет фото'}</a></p>
+            <p class="mb-1">Операторы: ${tower.operators || 'Не указано'}</p>
+            <p class="mb-1">Статус: ${getStatusDescription(tower.status)}</p>
+            <p class="mb-1">Заметки: ${tower.notes || 'Нет заметок'}</p>
+            <button class="btn btn-primary btn-sm mt-2" onclick="openMap(${tower.lat}, ${tower.lng})">Открыть на карте</button>
             <button class="btn btn-danger btn-sm" onclick="removeTower(${tower.id})">Удалить</button>
         `;
         towersList.appendChild(listItem);
     });
+}
+
+function getStatusDescription(status) {
+    switch (status) {
+        case 'overload': return 'Перегружена';
+        case 'accident': return 'Авария';
+        case 'free': return 'Свободна';
+        case 'active': return 'Активна';
+        default: return 'Неизвестно';
+    }
 }
 
 function removeTower(towerId) {
