@@ -70,9 +70,20 @@ function showTowerForm(coords) {
 
 function clearMarkerSelection() {
     markers.forEach(marker => {
-        marker.options.set('preset', 'islands#blueTowerIcon');
+      const tower = towers.find(t => t.id == marker.id);
+      let markerIcon = 'islands#blueTowerIcon'; // Стандартная иконка (синяя)
+      if (tower.status === 'accident') {
+        markerIcon = 'islands#redIcon'; // Красная иконка для аварийных вышек (не участвуют в маршруте)
+      } else if (tower.status === 'overload') {
+        markerIcon = 'islands#orangeIcon'; // Оранжевая иконка для перегруженных вышек
+      } else if (tower.status === 'free') {
+        markerIcon = 'islands#greenIcon'; // Зеленая иконка для свободных вышек
+      }
+      marker.options.set('preset', markerIcon);
     });
-}
+    // startTowerId = null;  убираем, так как это обнуляет выбор маркера
+    // endTowerId = null; убираем
+  }
 
 async function calculateRoute() {
     if (!startTowerId || !endTowerId) {
@@ -128,7 +139,7 @@ function displayRouteOnMap(routeCoordinates) {
     map.route = new ymaps.Polyline(routeCoordinates, {
         balloonContent: "Маршрут прокладки оптоволокна"
     }, {
-        strokeColor: "#0000FF",
+        strokeColor: "#800080",
         strokeWidth: 5,
         strokeOpacity: 0.8
     });
@@ -243,58 +254,71 @@ async function saveTowerData() {
 
 function addTowerToMap(tower) {
     if (!tower.lat || !tower.lng) {
-        console.error("Ошибка: Некорректные координаты вышки", tower);
-        return;
+      console.error('Ошибка: Некорректные координаты вышки', tower);
+      return;
     }
-    let markerIcon = 'islands#blueTowerIcon'; // Стандартная иконка
+    let markerIcon = 'islands#blueTowerIcon'; // Стандартная иконка (синяя)
     if (tower.status === 'accident') {
-        markerIcon = 'islands#redIcon'; // Красная иконка для аварийных вышек
+      markerIcon = 'islands#redIcon'; // Красная иконка для аварийных вышек (не участвуют в маршруте)
+    } else if (tower.status === 'overload') {
+      markerIcon = 'islands#orangeIcon'; // Оранжевая иконка для перегруженных вышек
+    } else if (tower.status === 'free') {
+      markerIcon = 'islands#greenIcon'; // Зеленая иконка для свободных вышек
     }
-    const marker = new ymaps.Placemark([tower.lat, tower.lng], {
+    const marker = new ymaps.Placemark(
+      [tower.lat, tower.lng],
+      {
         id: tower.id,
         iconCaption: 'Вышка',
-        balloonContent: tower.notes + (tower.operators ? `<br>Операторы: ${tower.operators}` : '') + (tower.status === 'accident' ? '<br><strong style="color:red;">Авария!</strong>' : ''),
-    }, {
+        balloonContent:
+          tower.notes +
+          (tower.operators ? `<br>Операторы: ${tower.operators}` : '') +
+          (tower.status === 'accident'
+            ? '<br><strong style="color:red;">Авария!</strong>'
+            : ''),
+      },
+      {
         draggable: true,
-        preset: markerIcon
-    });
-
+        preset: markerIcon,
+      },
+    );
+  
     marker.events.add('dragend', function (e) {
-        const updatedCoords = e.get('target').geometry.getCoordinates();
-        updateTowerCoords(marker, updatedCoords);
+      const updatedCoords = e.get('target').geometry.getCoordinates();
+      updateTowerCoords(marker, updatedCoords);
     });
-
+  
     marker.events.add('click', function (e) {
-        if (startTowerId === tower.id) {
-            // Снимаем выделение с первой вышки
-            startTowerId = null;
-            marker.options.set('preset', markerIcon); // Возвращаем обычную иконку
-            if (endTowerId !== null) {
-                // Если была выбрана вторая вышка, делаем её первой
-                startTowerId = endTowerId;
-                endTowerId = null;
-                const startMarker = markers.find(m => m.id === startTowerId);
-                startMarker.options.set('preset', 'islands#redIcon');
-            }
-        } else if (endTowerId === tower.id) {
-            // Снимаем выделение со второй вышки
-            endTowerId = null;
-            marker.options.set('preset', markerIcon); // Возвращаем обычную иконку
-        } else if (startTowerId === null) {
-            // Выбираем первую вышку
-            startTowerId = tower.id;
-            marker.options.set('preset', 'islands#redIcon');
-        } else if (endTowerId === null) {
-            // Выбираем вторую вышку
-            endTowerId = tower.id;
-            marker.options.set('preset', 'islands#orangeIcon');
+      if (startTowerId === tower.id) {
+        // Снимаем выделение с первой вышки
+        startTowerId = null;
+        marker.options.set('preset', markerIcon); // Возвращаем обычную иконку
+        if (endTowerId !== null) {
+          // Если была выбрана вторая вышка, делаем её первой
+          startTowerId = endTowerId;
+          endTowerId = null;
+          const startMarker = markers.find(m => m.id === startTowerId);
+          startMarker.options.set('preset', 'islands#blackIcon');
         }
+      } else if (endTowerId === tower.id) {
+        // Снимаем выделение со второй вышки
+        endTowerId = null;
+        marker.options.set('preset', markerIcon); // Возвращаем обычную иконку
+      } else if (startTowerId === null) {
+        // Выбираем первую вышку
+        startTowerId = tower.id;
+        marker.options.set('preset', 'islands#blackIcon');
+      } else if (endTowerId === null) {
+        // Выбираем вторую вышку
+        endTowerId = tower.id;
+        marker.options.set('preset', 'islands#violetIcon');
+      }
     });
-
+  
     map.geoObjects.add(marker);
     marker.id = tower.id;
     markers.push(marker);
-}
+  }
 
 function searchLocation(query) {
     ymaps.geocode(query).then(function (res) {
@@ -355,9 +379,9 @@ function updateTowerCoords(marker, coords) {
 }
 
 function updateTowerList() {
-    const towersList = document.getElementById('towers');
+    const towersList = document.getElementById('towers-list');
     towersList.innerHTML = '';
-    towers.slice(0, 5).forEach((tower, index) => {
+    towers.forEach((tower, index) => {
         const lat = typeof tower.lat === 'number' ? tower.lat.toFixed(5) : 'N/A';
         const lng = typeof tower.lng === 'number' ? tower.lng.toFixed(5) : 'N/A';
         const listItem = document.createElement('li');
@@ -374,16 +398,6 @@ function updateTowerList() {
         `;
         towersList.appendChild(listItem);
     });
-}
-
-function getStatusDescription(status) {
-    switch (status) {
-        case 'overload': return 'Перегружена';
-        case 'accident': return 'Авария';
-        case 'free': return 'Свободна';
-        case 'active': return 'Активна';
-        default: return 'Неизвестно';
-    }
 }
 
 function removeTower(towerId) {
@@ -439,3 +453,8 @@ function editTower(towerId) {
         $('#towerModal').modal('show');
     }
 }
+
+// Функция для открытия карты с маркером вышки (перенесена из towers.js)
+window.openMap = (lat, lng) => {
+    window.location.href = `index.html?lat=${lat}&lng=${lng}`;
+};
