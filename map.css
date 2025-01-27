@@ -9,7 +9,12 @@ body {
     margin-top: 10px;
 }
 .tower-list {
-    margin-top: 20px;
+    margin-top: 20px; /* Оставляем отступ сверху */
+    max-height: 200px; /* Ограничиваем высоту */
+    overflow-y: auto;  /* Добавляем вертикальную прокрутку */
+    border: 1px solid #ced4da; /* Добавляем рамку */
+    border-radius: 5px; /* Немного скругляем углы */
+    padding: 10px; /* Внутренний отступ */
 }
 .btn-save {
     margin-top: 10px;
@@ -104,4 +109,4 @@ ul {
 #dropdownMenuButton:focus {
     outline: none; 
     box-shadow: none; 
-  }
+  } 

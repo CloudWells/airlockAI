@@ -222,7 +222,7 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
     // Синхронизация моделей с базой данных
-    await sequelize.sync({ alter: true });
+    // await sequelize.sync({ alter: true });  // Закомментируй или удали эту строку
     console.log("All models were synchronized successfully.");
     app.listen(port, () => {
       console.log(`Сервер запущен на порту ${port}`);
