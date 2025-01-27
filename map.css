@@ -1,0 +1,107 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+#map {
+    height: 500px;
+    width: 100%;
+    margin-top: 10px;
+}
+.tower-list {
+    margin-top: 20px;
+}
+.btn-save {
+    margin-top: 10px;
+}
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+.main-content {
+    padding-top: 70px;
+}
+.search-wrapper {
+    display: flex;
+    margin-bottom: 10px;
+}
+.search-wrapper input {
+    flex: 1;
+    margin-right: 5px;
+}
+.mybaza {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 80%;
+    margin: auto;
+}
+
+.mybaza2 {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+/* Стили для форм */
+#authForm, #registerForm {
+    padding: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+.cool {
+    background: linear-gradient(to bottom, red, orange);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.cool2 {
+    background: linear-gradient(to bottom, white, orange);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#gemini-dropdown {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    border: none;
+}
+
+#dropdownMenuButton {
+    padding: 10px;
+    line-height: 20px;
+    background: none;
+    border: none;
+    transition: 0.3s;
+}
+
+#dropdownMenuButton:focus {
+    scale: 1.1;
+}
+
+
+#dropdownMenuButton svg {
+    width: 20px;
+    height: 20px;
+}
+
+#gemini-response {
+    background-color: #f8f9fa; 
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    padding: 15px; 
+    margin-top: 10px; 
+    font-size: 14px; 
+    margin: auto;
+}
+
+#dropdownMenuButton:focus {
+    outline: none; 
+    box-shadow: none; 
+  }

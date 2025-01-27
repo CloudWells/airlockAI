@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список вышек</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="map.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+        .tower-list-item {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .tower-list-item:hover {
+            background-color: #f2f2f2;
+        }
+        .rounded-circle { 
+            border-radius: 50%;
+        }
+        .mybaza2 {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        .cool {
+            background: linear-gradient(to bottom, red, orange);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 30px;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+    <header class="fixed-top bg-dark text-white mybaza">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mybaza2">
+            <a class="navbar-brand cool" href="/">AirLock AI</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Карта</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/towers">Вышки</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Отчеты</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="mt-4 mb-4">Список вышек</h2>
+        <ul id="towers-list" class="list-group">
+            </ul>
+    </div>
+
+    <script src="towers.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

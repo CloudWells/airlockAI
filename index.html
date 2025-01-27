@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление вышками</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="map.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98f9eaba-66dd-462e-84bb-0c5624137850&lang=ru_RU" type="text/javascript"></script>
+    <script defer src="map.js"></script>
+    <script defer src="index.js"></script>
+    <script defer src="register.js"></script>
+</head>
+<body>
+    <header class="fixed-top bg-dark text-white mybaza">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mybaza2">
+            <a class="navbar-brand cool" href="#">AirLock AI</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./towers.html" id="towersLink">Вышки</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Отчеты</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container main-content mt-3" id="mapContainer">
+        <div class="search-wrapper">
+            <input type="text" class="form-control" id="search-input" placeholder="Поиск места">
+            <button class="btn btn-dark" id="search-button">Искать</button>
+        </div>
+        <div id="map"></div>
+        <div class="tower-list">
+            <h2>Список вышек</h2>
+            <ul id="towers"></ul>
+        </div>
+        <button class="btn btn-outline-dark btn-sm mt-2" id="calculate-route">Рассчитать маршрут</button>
+        <div id="route-info" class="mt-2"></div>
+
+        <div id="gemini-container" style="display: none;">
+          <div class="dropdown" id="gemini-dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="./img/generate.svg" width="80%">
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="gemini-prompts">
+              </div>
+          </div>
+          <div id="gemini-response" class="mt-2"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="towerModal" tabindex="-1" role="dialog" aria-labelledby="towerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="towerModalLabel">Добавить вышку</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="towerForm">
+                        <div class="form-group">
+                            <label for="towerPhoto">Фотография вышки</label>
+                            <input type="text" class="form-control" id="towerPhoto" placeholder="URL к фото">
+                        </div>
+                        <div class="form-group">
+                            <label for="towerOperators">Операторы</label>
+                            <input type="text" class="form-control" id="towerOperators" placeholder="МТС, Билайн, Мегафон">
+                        </div>
+                        <div class="form-group">
+                            <label for="towerStatus">Статус</label>
+                            <select class="form-control" id="towerStatus">
+                                <option value="active">Активная</option>
+                                <option value="overload">Перегружена</option>
+                                <option value="accident">Авария</option>
+                                <option value="free">Свободна</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="towerNotes">Заметки</label>
+                            <textarea class="form-control" id="towerNotes" placeholder="Дополнительная информация"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTowerData()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tower-info" style="margin-top: 20px;"></div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
